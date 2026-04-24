@@ -1,0 +1,31 @@
+name: Build Windows Codex EXE Fast
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        working-directory: codex-rs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Show workspace packages
+        run: cargo metadata --no-deps --format-version 1
+
+      - name: Build Codex CLI
+        run: cargo build --release --bin codex
+
+      - name: Upload codex.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-windows-exe
+          path: codex-rs/target/release/codex.exe
